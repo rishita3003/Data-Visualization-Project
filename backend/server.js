@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs'); // You were missing this import
+const Papa = require('papaparse'); // You were missing this import
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,15 +27,19 @@ app.get('/api/data', (req, res) => {
 // API endpoint to get country coordinates
 app.get('/api/country-coordinates', (req, res) => {
   try {
+    console.log("Entered")
     // Path to the CSV file - adjust this to your file location
-    const csvFilePath = path.join(__dirname, 'charts', 'countries_coordinates.csv'); // r"C:\Users\Rishita\Desktop\Data-Visualization-Project\frontend\src\charts\countries_coordinates.csv"
+    const csvFilePath = "C:\\Users\\Rishita\\Desktop\\Data-Visualization-Project\\frontend\\src\\charts\\countries_coordinates.csv"
     
     // Read the CSV file
     const fileContent = fs.readFileSync(csvFilePath, 'utf8');
+    console.log("File content: ", fileContent.substring(0, 200) + "..."); // Only log a preview
     
     // Parse the CSV
     Papa.parse(fileContent, {
       header: true,
+      dynamicTyping: true, // Convert numbers automatically
+      skipEmptyLines: true,
       complete: (results) => {
         console.log(`Successfully parsed ${results.data.length} country records`);
         
